@@ -12,7 +12,7 @@
   </a>
 </h3>
 
-Welcome to pyCISCO project, a tool who can generate cisco device configuration files with input arguments.
+Welcome to pyCISCO project, a tool that can generate cisco device configuration files with input arguments.
 # Clone the Repository
 You should clone with 
 ```shell
