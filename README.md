@@ -11,7 +11,7 @@
     <img src="https://img.shields.io/badge/powered%20by-UVSQ-purple" alt="Powered by UVSQ students" height=24>
     <img src="https://img.shields.io/github/repo-size/0xSp3ctra/pyCISCO?color=yellow" alt="pyCISCO" height=24>
     <img src="https://img.shields.io/github/commit-activity/m/0xSp3ctra/pyCISCO" alt="pyCISCO" height=24>
-
+    <img src="https://img.shields.io/badge/version-1.0-orange" alt="pyCISCO" height=24>
   </a>
 </h3>
 
