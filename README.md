@@ -18,6 +18,44 @@
 Welcome to pyCISCO project, a tool that can generate cisco device configuration files with input arguments.
 # Clone the Repository
 You should clone with 
+
 ```shell
 $ git clone --recursive https://github.com/0xSp3ctra/pyCISCO.git
+```
+
+Usage :
+```shell
+$ python3 pycisco.py
+```
+Example of output in config.txt file:
+```shell
+S1_RA
+!
+enable password cocotest
+!
+username colin secret 9 $9$lp7fRt77t7NnA5$UoLt2/4ZxmMBftHnBciaPxU7hbN9e4VlVMYhIQr1srI
+!
+interface Vlan100
+ name management
+ ip address 192.168.1.100 255.255.255.0
+!
+```
+
+
+Download required libs
+```shell
+$ sudo apt-get install build-essential libssl-dev python-dev
+```
+
+Download required modules with pip
+```shell
+$ pip install scrypt
+$ pip install colorama
+$ pip install passlib
+$ pip install backports.pbkdf2
+```
+
+Or with conda
+```shell
+$ conda install -c conda-forge scrypt
 ```
