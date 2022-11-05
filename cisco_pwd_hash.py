@@ -11,20 +11,20 @@ def pwd_input(pwd: str):
         except KeyboardInterrupt:
             exit()
 
-def cisco_pwd(passwd_type: int, pwd: str):
-    if passwd_type == 5:
+def cisco_pwd(pwd_type: int, pwd: str):
+    if pwd_type == 5:
         cleartext_password = pwd_input(pwd)
         passwd_hash = type5(cleartext_password)
         return passwd_hash
-    elif passwd_type == 7:
+    elif pwd_type == 7:
         cleartext_password = pwd_input(pwd)
         passwd_hash = type7(cleartext_password)
         return passwd_hash
-    elif passwd_type == 8:
+    elif pwd_type == 8:
         cleartext_password = pwd_input(pwd)
         passwd_hash = type8(cleartext_password)
         return passwd_hash
-    elif passwd_type == 9:
+    elif pwd_type == 9:
         cleartext_password = pwd_input(pwd)
         passwd_hash = type9(cleartext_password)
         return passwd_hash
