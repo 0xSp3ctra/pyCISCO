@@ -4,7 +4,6 @@ from colorama import Fore
 
 def banner():
     print('''
-    ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
     ░░░░░░░░░░░░░░░░ pyCISCO ░░░░░░░░░░░░░░░░░░░░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒░░░░░░░░░░░░░░░░░░░░░░░
     ░▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒░░░░░░░░░░░░░░░░░░
     ░▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▓▓▓▒▒▓▓▓▒▒▓▒▒▒▓▒▒▒▒▓▒▒▒▒▒▒▒▒▓▓▓▒▓▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒░░░░░░░░░░░░░
@@ -31,9 +30,10 @@ def show_menu():
     print(Fore.LIGHTBLUE_EX + "[2] " + Fore.RESET + "Create enable password")
     print(Fore.LIGHTBLUE_EX + "[3] " + Fore.RESET + "Create user and password")
     print(Fore.LIGHTBLUE_EX + "[4] " + Fore.RESET + "Create Vlans")
-    print(Fore.LIGHTBLUE_EX + "[5] " + Fore.RESET + "Exit pyCISCO and\n")
+    print(Fore.LIGHTBLUE_EX + "[5] " + Fore.RESET + "Exit pyCISCO and write configuration file\n")
 
 infos_switch = []
+vlan_list = []
 
 def app_start():
     show_menu()
@@ -66,11 +66,13 @@ def app_start():
 
         elif choice == 4:
             vlan_infos = str(input("\nEnter the vlan infos (id:name:ip_address:mask) : "))
-            vlan_config_line = ConfigSwitch.create_vlan(vlan_infos=vlan_infos)
+            vlan_config_line, vlan_id = ConfigSwitch.create_vlan(vlan_infos=vlan_infos)
+            vlan_list.append(vlan_id)
             infos_switch.append(vlan_config_line)
             print(Fore.YELLOW + vlan_config_line + Fore.RESET)
 
         elif choice == 5:
+            print(vlan_list)
             print(Fore.YELLOW + "\n[+] Writing configuration in 'config.txt' ..." + Fore.RESET)
             with open("config.txt", "w") as f:
                 for element in infos_switch:
