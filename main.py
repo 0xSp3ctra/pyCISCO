@@ -23,4 +23,4 @@ class ConfigSwitch():
         vlan_ip = vlan_infos.split(':')[2]
         vlan_mask = vlan_infos.split(':')[3]
         vlan_config_line = f"interface Vlan{vlan_id}\n name {vlan_name}\n ip address {vlan_ip} {vlan_mask}"
-        return vlan_config_line
+        return vlan_config_line, vlan_id
