@@ -2,7 +2,6 @@ import random, base64, sys, scrypt
 from backports.pbkdf2 import pbkdf2_hmac
 from passlib.hash import md5_crypt
 from passlib.hash import cisco_type7
-from backports import *
 
 # Translate Standard Base64 table to Cisco Base64 Table used in Type8 and TYpe 9                                                
 std_b64chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
