@@ -21,3 +21,19 @@ You should clone with
 ```shell
 $ git clone --recursive https://github.com/0xSp3ctra/pyCISCO.git
 ```
+Download required libs
+```shell
+$ sudo apt-get install build-essential libssl-dev python-dev
+```
+
+Download required modules with pip
+```shell
+$ pip install scrypt
+$ pip install passlib
+$ pip install backports.pbkdf2
+```
+
+Or with conda
+```shell
+$ conda install -c conda-forge scrypt
+```
