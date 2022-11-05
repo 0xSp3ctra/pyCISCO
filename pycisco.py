@@ -1,14 +1,25 @@
 from sys import exit
 from main import ConfigSwitch
 from colorama import Fore
+def banner():
+    print(Fore.RED + '''  
+               ____ ___ ____   ____ ___  
+  _ __  _   _ / ___|_ _/ ___| / ___/ _ \ 
+ | '_ \| | | | |    | |\___ \| |  | | | |
+ | |_) | |_| | |___ | | ___) | |__| |_| |
+ | .__/ \__, |\____|___|____/ \____\___/ 
+ |_|    |___/     
+
+by @0xSp3ctra                        v1.0                      
+    ''' + Fore.RESET)
 
 def show_menu():
-    print("\nPlease chose action to affect on your device :\n\
-[1] Give a hostname\n\
-[2] Create enable password\n\
-[3] Create user and password\n\
-[4] Create Vlans\n\
-[5] Exit pyCISCO\n")
+    print("\nPlease chose actions to affect on your device :\n")
+    print(Fore.LIGHTBLUE_EX + "[1] " + Fore.RESET + "Give a hostname")
+    print(Fore.LIGHTBLUE_EX + "[2] " + Fore.RESET + "Create enable password")
+    print(Fore.LIGHTBLUE_EX + "[3] " + Fore.RESET + "Create user and password")
+    print(Fore.LIGHTBLUE_EX + "[4] " + Fore.RESET + "Create Vlans")
+    print(Fore.LIGHTBLUE_EX + "[5] " + Fore.RESET + "Exit pyCISCO\n")
 
 infos_switch = []
 
@@ -60,6 +71,7 @@ def app_start():
             app_start()
 
 def main():
+    banner()
     while True:
         app_start()
          
