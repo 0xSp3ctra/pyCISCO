@@ -27,7 +27,7 @@ Usage :
 ```shell
 $ python3 pycisco.py
 ```
-Examples :
+Example of output in config.txt file:
 ```shell
 S1_RA
 !
