@@ -1,6 +1,7 @@
 from cisco_pwd_hash import cisco_pwd
 from colorama import Fore
 from time import sleep
+from re import match
 class ConfigSwitch():
 
     def __init__(self, InfosSwitch: list, InfosVlan: list) -> None:
@@ -39,12 +40,22 @@ class ConfigSwitch():
         return user_pwd_device_line
 
     def create_vlan(self, vlan_infos: str) -> str:
+        vlan_config_line = ""
         if vlan_infos.count(':') > 1:
             vlan_id = int(vlan_infos.split(':')[0])
             vlan_name = vlan_infos.split(':')[1]
             vlan_ip = vlan_infos.split(':')[2]
             vlan_mask = vlan_infos.split(':')[3]
-            vlan_config_line = f"interface Vlan{vlan_id}\n name {vlan_name}\n ip address {vlan_ip} {vlan_mask}"
+
+            pattern = r"\b(?:(?:2(?:[0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9])\.){3}(?:(?:2([0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9]))\b"
+            # vlan_config_line = f"interface Vlan{vlan_id}\n name {vlan_name}\n ip address {vlan_ip} {vlan_mask}"
+            test_ip = match(pattern, vlan_ip) and match(pattern, vlan_mask)
+
+            if test_ip:
+                vlan_config_line = f"interface Vlan{vlan_id}\n name {vlan_name}\n ip address {vlan_ip} {vlan_mask}"
+            else:
+                print("IP or mask address format not good")
+                exit(0)
         else:
             vlan_id = int(vlan_infos.split(':')[0])
             vlan_name = vlan_infos.split(':')[1]
