@@ -2,6 +2,9 @@ from cisco_pwd_hash import cisco_pwd
 from colorama import Fore
 from time import sleep
 class ConfigSwitch:
+from re import match
+
+class ConfigSwitch():
 
     def __init__(self, InfosSwitch: list, InfosVlan: list) -> None:
         self.infos_switch = InfosSwitch
@@ -60,6 +63,7 @@ class ConfigSwitch:
         if not self.iptest(vlan_ip): return
         vlan_id = int(vlan_id)
         vlan_config_line = f"interface Vlan{vlan_id}\n name {vlan_name}\n ip address {vlan_ip} {vlan_mask}"
+
         self.infos_switch.append(vlan_config_line)
         self.vlan_id_list.append(vlan_id)
         return vlan_config_line
