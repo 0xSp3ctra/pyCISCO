@@ -39,11 +39,17 @@ class ConfigSwitch():
         return user_pwd_device_line
 
     def create_vlan(self, vlan_infos: str) -> str:
-        vlan_id = int(vlan_infos.split(':')[0])
-        vlan_name = vlan_infos.split(':')[1]
-        vlan_ip = vlan_infos.split(':')[2]
-        vlan_mask = vlan_infos.split(':')[3]
-        vlan_config_line = f"interface Vlan{vlan_id}\n name {vlan_name}\n ip address {vlan_ip} {vlan_mask}"
+        if vlan_infos.count(':') > 1:
+            vlan_id = int(vlan_infos.split(':')[0])
+            vlan_name = vlan_infos.split(':')[1]
+            vlan_ip = vlan_infos.split(':')[2]
+            vlan_mask = vlan_infos.split(':')[3]
+            vlan_config_line = f"interface Vlan{vlan_id}\n name {vlan_name}\n ip address {vlan_ip} {vlan_mask}"
+        else:
+            vlan_id = int(vlan_infos.split(':')[0])
+            vlan_name = vlan_infos.split(':')[1]
+            vlan_config_line = f"interface Vlan{vlan_id}\n name {vlan_name}"
+
         self.infos_switch.append(vlan_config_line)
         self.vlan_id_list.append(vlan_id)
         return vlan_config_line
