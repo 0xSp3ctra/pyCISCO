@@ -15,13 +15,13 @@ class ConfigSwitch():
         Take in argument an enable password for the device and convert into the line to inject
         into the config file (enable password xxxx)
         '''
-        enable_pwd = f"enable password {enable_pwd}"
-        return enable_pwd
+        enable_pwd_line = f"enable password {enable_pwd}"
+        return enable_pwd_line
 
     def add_user_pwd_line(user_pwd_infos: str) -> str:
         '''
         Take in argument an username, a password and a cisco password hashing type for the device and convert into the line to inject
-        into the config file (username xxxx secret x xxxxxxxx)
+        into the config file (username xxxx secret x)
         '''
         username = user_pwd_infos.split(':')[0]
         pwd = user_pwd_infos.split(':')[1]
@@ -29,7 +29,6 @@ class ConfigSwitch():
         pwd_hash = cisco_pwd(pwd_type, pwd)
         user_pwd_device_line = f"username {username} secret {pwd_type} {pwd_hash}"
         return user_pwd_device_line
-        # , pwd_type, pwd_hash, username
 
     def create_vlan(vlan_infos: str) -> str:
         vlan_id = int(vlan_infos.split(':')[0])
@@ -59,8 +58,6 @@ class ConfigSwitch():
                 switchport_line_all.append(switchport_line)
 
             else:pass
-        # for line in switchport_line_all:
-        #     print(str(line))
 
     def configure_interface() -> str:
         interface_type = str(input("\nDo you want to configure :\n[1] FastEthernet interfaces\n[2] GigabitEthernet interfaces\n"))
