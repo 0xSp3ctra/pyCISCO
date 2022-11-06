@@ -1,6 +1,9 @@
 import unittest
 from main import ConfigSwitch
 
+infos_switch = []
+vlan_id_list = []
+ConfigSwitch = ConfigSwitch(InfosSwitch=infos_switch, InfosVlan=vlan_id_list)
 class TestConfigSwitch(unittest.TestCase):
 
     def test_add_hostname(self):
@@ -18,6 +21,9 @@ class TestConfigSwitch(unittest.TestCase):
         
         # self.assertEqual(resultat1, "username username_coco secret 5 $1$")
         self.assertNotEqual(resultat1, resultat2)
+
+    def test_vlan_create(self):
+        self.assertEqual(ConfigSwitch.create_vlan("10:data"), "interface Vlan10\n name data")
 
 if __name__ == '__main__':
     unittest.main()
