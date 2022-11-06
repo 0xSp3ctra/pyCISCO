@@ -1,12 +1,29 @@
 from cisco_pwd_hash import cisco_pwd
 from colorama import Fore
 from time import sleep
+class ConfigSwitch:
 from re import match
+
 class ConfigSwitch():
 
     def __init__(self, InfosSwitch: list, InfosVlan: list) -> None:
         self.infos_switch = InfosSwitch
         self.vlan_id_list = InfosVlan
+
+    def iptest(ip, masque):
+        ipd = ip.split(".")
+        mad = masque.split(".")
+        ipd, mad = [int(d) for d in ipd], [int(d) for d in mad]
+        for d in ipd:
+            if d > 256:
+                return False
+            if d < 0:
+                return False
+        if all([d == 0 for d in ipd]) or all([d == 255 for d in ipd]):
+            return False
+        if all([d == 0 for d in mad]) or all([d == 255 for d in mad]):
+            return False
+        return True
 
     def add_hostname(self, hostname: str) -> str:
         '''
@@ -31,35 +48,21 @@ class ConfigSwitch():
         Take in argument an username, a password and a cisco password hashing type for the device and convert into the line to inject
         into the config file (username xxxx secret x)
         '''
-        username = user_pwd_infos.split(':')[0]
-        pwd = user_pwd_infos.split(':')[1]
-        pwd_type = int(user_pwd_infos.split(':')[2])
-        pwd_hash = cisco_pwd(pwd_type, pwd)
+        entry = user_pwd_infos.split(':')
+        if len(entry) != 3: return
+        username, pwd, pwd_type = tuple(entry)
+        pwd_hash = cisco_pwd(int(pwd_type), pwd)
         user_pwd_device_line = f"username {username} secret {pwd_type} {pwd_hash}"
         self.infos_switch.append(user_pwd_device_line)
         return user_pwd_device_line
 
     def create_vlan(self, vlan_infos: str) -> str:
-        vlan_config_line = ""
-        if vlan_infos.count(':') > 1:
-            vlan_id = int(vlan_infos.split(':')[0])
-            vlan_name = vlan_infos.split(':')[1]
-            vlan_ip = vlan_infos.split(':')[2]
-            vlan_mask = vlan_infos.split(':')[3]
-
-            pattern = r"\b(?:(?:2(?:[0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9])\.){3}(?:(?:2([0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9]))\b"
-            # vlan_config_line = f"interface Vlan{vlan_id}\n name {vlan_name}\n ip address {vlan_ip} {vlan_mask}"
-            test_ip = match(pattern, vlan_ip) and match(pattern, vlan_mask)
-
-            if test_ip:
-                vlan_config_line = f"interface Vlan{vlan_id}\n name {vlan_name}\n ip address {vlan_ip} {vlan_mask}"
-            else:
-                print("IP or mask address format not good")
-                exit(0)
-        else:
-            vlan_id = int(vlan_infos.split(':')[0])
-            vlan_name = vlan_infos.split(':')[1]
-            vlan_config_line = f"interface Vlan{vlan_id}\n name {vlan_name}"
+        entry = vlan_infos.split(':')
+        if len(entry) != 4: return
+        vlan_id, vlan_name, vlan_ip, vlan_mask = tuple(entry)
+        if not self.iptest(vlan_ip): return
+        vlan_id = int(vlan_id)
+        vlan_config_line = f"interface Vlan{vlan_id}\n name {vlan_name}\n ip address {vlan_ip} {vlan_mask}"
 
         self.infos_switch.append(vlan_config_line)
         self.vlan_id_list.append(vlan_id)
@@ -107,13 +110,13 @@ class ConfigSwitch():
                     vlans = str(input("\nYour selection : "))
                     vlans = vlans.split(',')
                     vlans_int = [int(vlans_int) for vlans_int in vlans]
-                    
+
                     check = any(item in vlans_int for item in self.vlan_id_list)
-                    if check:    
+                    if check:
                         switchport_line_all = ConfigSwitch.switchport(vlans_int)
                         for switchport_line in switchport_line_all:
                             interface_config_line = f"interface Fa0/{interface}\n" + switchport_line
-                            self.infos_switch.append(interface_config_line)                    
+                            self.infos_switch.append(interface_config_line)
                     else:
                         print(Fore.RED + "\nVlans aren't created, please create them before assigment" + Fore.RESET)
                         break
