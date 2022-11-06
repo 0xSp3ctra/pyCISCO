@@ -1,7 +1,6 @@
 from sys import exit
 from main import ConfigSwitch
 from colorama import Fore
-from time import sleep
 
 def banner():
     print('''
@@ -35,8 +34,8 @@ def show_menu():
     print(Fore.LIGHTBLUE_EX + "[6] " + Fore.RESET + "Exit pyCISCO and write configuration file\n")
 
 infos_switch = []
-vlan_list = []
-ConfigSwitch = ConfigSwitch(InfosSwitch=infos_switch, InfosVlan=vlan_list)
+vlan_id_list = []
+ConfigSwitch = ConfigSwitch(InfosSwitch=infos_switch, InfosVlan=vlan_id_list)
 
 def app_start():
     show_menu()
@@ -66,12 +65,12 @@ def app_start():
 
         elif choice == 4:
             vlan_infos = str(input("\nEnter the vlan infos (id:name:ip_address:mask) : "))
-            vlan_config_line, vlan_id = ConfigSwitch.create_vlan(vlan_infos)
-            vlan_list.append(vlan_id)
-            print(Fore.YELLOW + vlan_config_line + Fore.RESET)
+            vlan_config_line = ConfigSwitch.create_vlan(vlan_infos)
+            print(Fore.YELLOW + f"New line saved : \n{vlan_config_line}" + Fore.RESET)
 
         elif choice == 5:
-            ConfigSwitch.configure_interface()
+            interface_config_line = ConfigSwitch.configure_interface()
+            print(Fore.YELLOW + f"New line saved : \n{interface_config_line}" + Fore.RESET)
 
         elif choice == 6:
             print(Fore.YELLOW + "\n[+] Writing configuration in 'config.txt' ..." + Fore.RESET)
