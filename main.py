@@ -1,7 +1,6 @@
 from cisco_pwd_hash import cisco_pwd
 from colorama import Fore
 from time import sleep
-class ConfigSwitch:
 from re import match
 
 class ConfigSwitch():
