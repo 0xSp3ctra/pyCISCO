@@ -49,9 +49,9 @@ def app_start():
     else:
         if choice == 1:
             hostname = str(input("\nEnter the name of your device : "))
-            hostname = ConfigSwitch.add_hostname(hostname=hostname)
-            infos_switch.append(hostname)
-            print(Fore.YELLOW + f"[+] Hostname created : {hostname}" + Fore.RESET)
+            hostname_line = ConfigSwitch.add_hostname(hostname)
+            infos_switch.append(hostname_line)
+            print(Fore.YELLOW + f"[+] Hostname created : {hostname_line}" + Fore.RESET)
             
         elif choice == 2:
             enable_pwd = str(input("\nEnter the enable password : "))
