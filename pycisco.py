@@ -30,7 +30,8 @@ def show_menu():
     print(Fore.LIGHTBLUE_EX + "[2] " + Fore.RESET + "Create enable password")
     print(Fore.LIGHTBLUE_EX + "[3] " + Fore.RESET + "Create user and password")
     print(Fore.LIGHTBLUE_EX + "[4] " + Fore.RESET + "Create Vlans")
-    print(Fore.LIGHTBLUE_EX + "[5] " + Fore.RESET + "Exit pyCISCO and write configuration file\n")
+    print(Fore.LIGHTBLUE_EX + "[5] " + Fore.RESET + "Configure interfaces")
+    print(Fore.LIGHTBLUE_EX + "[6] " + Fore.RESET + "Exit pyCISCO and write configuration file\n")
 
 infos_switch = []
 vlan_list = []
@@ -40,7 +41,7 @@ def app_start():
     try: 
         choice = int(input("\nYour selection: "))
     except ValueError:
-        print(Fore.RED + "\nInvalid option. Please enter 1-5 or press CTRL+C to exit: \n" + Fore.RESET)
+        print(Fore.RED + "\nInvalid option. Please enter 1-6 or press CTRL+C to exit: \n" + Fore.RESET)
         app_start()
     except KeyboardInterrupt:
         print(Fore.RED + "\nExiting pyCISCO ...\n" + Fore.RESET)
@@ -72,7 +73,9 @@ def app_start():
             print(Fore.YELLOW + vlan_config_line + Fore.RESET)
 
         elif choice == 5:
-            print(vlan_list)
+            ConfigSwitch.configure_interface()
+
+        elif choice == 6:
             print(Fore.YELLOW + "\n[+] Writing configuration in 'config.txt' ..." + Fore.RESET)
             with open("config.txt", "w") as f:
                 for element in infos_switch:
@@ -80,7 +83,7 @@ def app_start():
             print(Fore.YELLOW + "\n[+] Configuration writed" + Fore.RESET)
             exit(0)
         else:
-            print(Fore.RED + "\nInvalid option. Please enter 1-5 or press CTRL + C to exit: \n" + Fore.RESET)
+            print(Fore.RED + "\nInvalid option. Please enter 1-6 or press CTRL + C to exit: \n" + Fore.RESET)
             app_start()
 
 def main():
