@@ -2,20 +2,34 @@ from cisco_pwd_hash import cisco_pwd
 from colorama import Fore
 class ConfigSwitch():
 
-    def add_hostname(hostname: str) -> str:
-        return hostname
+    def add_hostname(hostname) -> str:
+        '''
+        Take in argument a hostname for the device and convert into the line to inject
+        into the config file (hostname xxxx)
+        '''
+        hostname_line = f"hostname {hostname}"
+        return hostname_line
 
     def add_enable_pwd(enable_pwd: str) -> str:
+        '''
+        Take in argument an enable password for the device and convert into the line to inject
+        into the config file (enable password xxxx)
+        '''
         enable_pwd = f"enable password {enable_pwd}"
         return enable_pwd
 
     def add_user_pwd_line(user_pwd_infos: str) -> str:
+        '''
+        Take in argument an username, a password and a cisco password hashing type for the device and convert into the line to inject
+        into the config file (username xxxx secret x xxxxxxxx)
+        '''
         username = user_pwd_infos.split(':')[0]
         pwd = user_pwd_infos.split(':')[1]
         pwd_type = int(user_pwd_infos.split(':')[2])
         pwd_hash = cisco_pwd(pwd_type, pwd)
         user_pwd_device_line = f"username {username} secret {pwd_type} {pwd_hash}"
-        return user_pwd_device_line, pwd_type, pwd_hash, username
+        return user_pwd_device_line
+        # , pwd_type, pwd_hash, username
 
     def create_vlan(vlan_infos: str) -> str:
         vlan_id = int(vlan_infos.split(':')[0])
