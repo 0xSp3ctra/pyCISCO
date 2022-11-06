@@ -1,24 +1,31 @@
 from cisco_pwd_hash import cisco_pwd
 from colorama import Fore
+from time import sleep
 class ConfigSwitch():
 
-    def add_hostname(hostname) -> str:
+    def __init__(self, InfosSwitch: list, InfosVlan: list) -> None:
+        self.infos_switch = InfosSwitch
+        self.infos_vlan = InfosVlan
+
+    def add_hostname(self, hostname: str) -> str:
         '''
         Take in argument a hostname for the device and convert into the line to inject
         into the config file (hostname xxxx)
         '''
         hostname_line = f"hostname {hostname}"
+        self.infos_switch.append(hostname_line)
         return hostname_line
 
-    def add_enable_pwd(enable_pwd: str) -> str:
+    def add_enable_pwd(self, enable_pwd: str) -> str:
         '''
         Take in argument an enable password for the device and convert into the line to inject
         into the config file (enable password xxxx)
         '''
         enable_pwd_line = f"enable password {enable_pwd}"
+        self.infos_switch.append(enable_pwd_line)
         return enable_pwd_line
 
-    def add_user_pwd_line(user_pwd_infos: str) -> str:
+    def add_user_pwd_line(self, user_pwd_infos: str) -> str:
         '''
         Take in argument an username, a password and a cisco password hashing type for the device and convert into the line to inject
         into the config file (username xxxx secret x)
@@ -28,14 +35,16 @@ class ConfigSwitch():
         pwd_type = int(user_pwd_infos.split(':')[2])
         pwd_hash = cisco_pwd(pwd_type, pwd)
         user_pwd_device_line = f"username {username} secret {pwd_type} {pwd_hash}"
+        self.infos_switch.append(user_pwd_device_line)
         return user_pwd_device_line
 
-    def create_vlan(vlan_infos: str) -> str:
+    def create_vlan(self, vlan_infos: str) -> str:
         vlan_id = int(vlan_infos.split(':')[0])
         vlan_name = vlan_infos.split(':')[1]
         vlan_ip = vlan_infos.split(':')[2]
         vlan_mask = vlan_infos.split(':')[3]
         vlan_config_line = f"interface Vlan{vlan_id}\n name {vlan_name}\n ip address {vlan_ip} {vlan_mask}"
+        self.infos_switch.append(vlan_config_line)
         return vlan_config_line, vlan_id
 
     def switchport(vlans_id: str) -> str:
@@ -72,3 +81,10 @@ class ConfigSwitch():
                 if choice == 1:
                     vlans = str(input("Enter the numero of vlan to configure on this port " + Fore.RED + "(10,20,X) : " + Fore.RESET))
                     ConfigSwitch.switchport(vlans)
+
+    def write_configuration(self, infos_switch: list):
+        with open("config.txt", "w") as f:
+                for element in self.infos_switch:
+                    print(Fore.GREEN + f"Adding line : {element} in config.txt ... " + Fore.RESET)
+                    sleep(.5)
+                    f.write("\n" + element + "\n!")

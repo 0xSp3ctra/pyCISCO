@@ -36,6 +36,7 @@ def show_menu():
 
 infos_switch = []
 vlan_list = []
+ConfigSwitch = ConfigSwitch(InfosSwitch=infos_switch, InfosVlan=vlan_list)
 
 def app_start():
     show_menu()
@@ -50,27 +51,23 @@ def app_start():
     else:
         if choice == 1:
             hostname = str(input("\nEnter the name of your device : "))
-            hostname_line = ConfigSwitch.add_hostname(hostname=hostname)
-            infos_switch.append(hostname_line)
+            hostname_line = ConfigSwitch.add_hostname(hostname)
             print(Fore.YELLOW + f"[+] New line saved : {hostname_line}" + Fore.RESET)
             
         elif choice == 2:
             enable_pwd = str(input("\nEnter the enable password : "))
-            enable_pwd_line = ConfigSwitch.add_enable_pwd(enable_pwd=enable_pwd)
-            infos_switch.append(enable_pwd_line)
+            enable_pwd_line = ConfigSwitch.add_enable_pwd(enable_pwd)
             print(Fore.YELLOW + f"[+] New line saved : {enable_pwd_line}" + Fore.RESET)
 
         elif choice == 3:
             user_pwd_infos = str(input("\nEnter the infos (username:password:password_type(5,7,8,9)): "))
-            user_pwd_device_line = ConfigSwitch.add_user_pwd_line(user_pwd_infos=user_pwd_infos)
-            infos_switch.append(user_pwd_device_line)
+            user_pwd_device_line = ConfigSwitch.add_user_pwd_line(user_pwd_infos)
             print(Fore.YELLOW + f"New line saved : {user_pwd_device_line}" + Fore.RESET)
 
         elif choice == 4:
             vlan_infos = str(input("\nEnter the vlan infos (id:name:ip_address:mask) : "))
-            vlan_config_line, vlan_id = ConfigSwitch.create_vlan(vlan_infos=vlan_infos)
+            vlan_config_line, vlan_id = ConfigSwitch.create_vlan(vlan_infos)
             vlan_list.append(vlan_id)
-            infos_switch.append(vlan_config_line)
             print(Fore.YELLOW + vlan_config_line + Fore.RESET)
 
         elif choice == 5:
@@ -78,11 +75,7 @@ def app_start():
 
         elif choice == 6:
             print(Fore.YELLOW + "\n[+] Writing configuration in 'config.txt' ..." + Fore.RESET)
-            with open("config.txt", "w") as f:
-                for element in infos_switch:
-                    print(Fore.GREEN + f"Adding line : {element} in config.txt ... " + Fore.RESET)
-                    sleep(.5)
-                    f.write("\n" + element + "\n!")
+            ConfigSwitch.write_configuration(infos_switch)
             print(Fore.YELLOW + "\n[+] Configuration writed" + Fore.RESET)
             exit(0)
         else:
