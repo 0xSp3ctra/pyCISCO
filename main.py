@@ -9,20 +9,16 @@ class ConfigSwitch():
         self.infos_switch = InfosSwitch
         self.vlan_id_list = InfosVlan
 
-    def iptest(ip, masque):
-        ipd = ip.split(".")
-        mad = masque.split(".")
-        ipd, mad = [int(d) for d in ipd], [int(d) for d in mad]
-        for d in ipd:
-            if d > 256:
-                return False
-            if d < 0:
-                return False
-        if all([d == 0 for d in ipd]) or all([d == 255 for d in ipd]):
-            return False
-        if all([d == 0 for d in mad]) or all([d == 255 for d in mad]):
-            return False
-        return True
+    def test_ip_mask(ip: str, mask: str) -> bool:
+
+        pattern = r"\b(?:(?:2(?:[0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9])\.){3}(?:(?:2([0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9]))\b"
+
+        if match(pattern, ip) and match(pattern, mask):
+            return True
+        else:
+            print(Fore.RED + "IP or mask address format not good, please retry" + Fore.RESET)
+            pass
+
 
     def add_hostname(self, hostname: str) -> str:
         '''
@@ -56,19 +52,26 @@ class ConfigSwitch():
         return user_pwd_device_line
 
     def create_vlan(self, vlan_infos: str) -> str:
-        entry = vlan_infos.split(':')
-        if len(entry) != 4: return
-        vlan_id, vlan_name, vlan_ip, vlan_mask = tuple(entry)
-        if not self.iptest(vlan_ip): return
-        vlan_id = int(vlan_id)
-        vlan_config_line = f"interface Vlan{vlan_id}\n name {vlan_name}\n ip address {vlan_ip} {vlan_mask}"
+        
+        vlan_config_line = ""
+        if vlan_infos.count(':') > 1:
+            vlan_id = int(vlan_infos.split(':')[0])
+            vlan_name = vlan_infos.split(':')[1]
+            vlan_ip = vlan_infos.split(':')[2]
+            vlan_mask = vlan_infos.split(':')[3]
+
+            if ConfigSwitch.test_ip_mask(ip=vlan_ip, mask=vlan_mask):
+                vlan_config_line = f"interface Vlan{vlan_id}\n name {vlan_name}\n ip address {vlan_ip} {vlan_mask}"        
+        else:
+            vlan_id = int(vlan_infos.split(':')[0])
+            vlan_name = vlan_infos.split(':')[1]
+            vlan_config_line = f"interface Vlan{vlan_id}\n name {vlan_name}"
 
         self.infos_switch.append(vlan_config_line)
         self.vlan_id_list.append(vlan_id)
         return vlan_config_line
 
     def switchport(vlans_int: list[str]) -> str:
-        # vlans_int = vlans_int.split(',')
         switchport_line_all = []
 
         for vlan in vlans_int:
