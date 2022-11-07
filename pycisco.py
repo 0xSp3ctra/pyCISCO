@@ -25,7 +25,7 @@ ConfigSwitch = ConfigSwitch(InfosSwitch=infos_switch, InfosVlan=vlan_id_list)
 
 def test(line: str) -> None:
     print(
-        Fore.YELLOW + f"[+] New line saved : {line}" + Fore.RESET if line
+        Fore.YELLOW + f"[+] New line saved : \n{line}" + Fore.RESET if line
         else Fore.RED + "\nInvalid input." + Fore.RESET
     )
 
