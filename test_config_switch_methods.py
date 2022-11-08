@@ -25,5 +25,8 @@ class TestConfigSwitch(unittest.TestCase):
     def test_vlan_create(self):
         self.assertEqual(ConfigSwitch.create_vlan("10:data"), "interface Vlan10\n name data")
 
+    def test_add_default_gateway(self):
+        self.assertEqual(ConfigSwitch.add_default_gateway("10.120.11.11"), "ip default-gateway 10.120.11.11")
+        
 if __name__ == '__main__':
     unittest.main()
