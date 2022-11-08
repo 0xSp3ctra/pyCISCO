@@ -9,16 +9,15 @@ class ConfigSwitch():
         self.infos_switch = InfosSwitch
         self.vlan_id_list = InfosVlan
 
-    def test_ip_mask(ip: str, mask: str) -> bool:
+    def test_ip_mask(ip: str) -> bool:
 
         pattern = r"\b(?:(?:2(?:[0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9])\.){3}(?:(?:2([0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9]))\b"
 
-        if match(pattern, ip) and match(pattern, mask):
+        if match(pattern, ip):
             return True
         else:
-            print(Fore.RED + "IP or mask address format not good, please retry" + Fore.RESET)
+            print(Fore.RED + "IP address format not good, please retry" + Fore.RESET)
             pass
-
 
     def add_hostname(self, hostname: str) -> str:
         '''
@@ -51,8 +50,17 @@ class ConfigSwitch():
         self.infos_switch.append(user_pwd_device_line)
         return user_pwd_device_line
 
-    def create_vlan(self, vlan_infos: str) -> str:
+    def add_default_gateway(self, ip):
+        if ConfigSwitch.test_ip_mask(ip=ip):
+            default_gateway_line = f"ip default-gateway {ip}"
+        self.infos_switch.append(default_gateway_line)
+        return default_gateway_line
         
+    def create_vlan(self, vlan_infos: str) -> str:
+        '''
+        Take in argument the vlan infos :id, name, ip adress and mask (2 last optionnal), and convert into the line to inject
+        into the config file (interface VlanX ip address xxxx mask xxxx)
+        '''
         vlan_config_line = ""
         if vlan_infos.count(':') > 1:
             vlan_id = int(vlan_infos.split(':')[0])
@@ -60,7 +68,7 @@ class ConfigSwitch():
             vlan_ip = vlan_infos.split(':')[2]
             vlan_mask = vlan_infos.split(':')[3]
 
-            if ConfigSwitch.test_ip_mask(ip=vlan_ip, mask=vlan_mask):
+            if ConfigSwitch.test_ip_mask(ip=vlan_ip) and ConfigSwitch.test_ip_mask(ip=vlan_mask):
                 vlan_config_line = f"interface Vlan{vlan_id}\n name {vlan_name}\n ip address {vlan_ip} {vlan_mask}"        
         else:
             vlan_id = int(vlan_infos.split(':')[0])
@@ -93,11 +101,27 @@ class ConfigSwitch():
 
         return switchport_line_all
 
+    def change_duplex(mode: str) -> str:
+        if mode == "full":
+            change_duplex_line = "duplex full"
+        elif mode == "half":
+            change_duplex_line = "duplex half"
+        else:
+            print(Fore.RED + "Unrecognized mode, please retry" + Fore.RED)
+            ConfigSwitch.configure_interface()
+            
+        return change_duplex_line
+
     def change_traffic_speed(speed: int) -> str:
-        change_traffic_speed_line = f" speed {speed}"
+        print("\nPlease choose between full duplex and half-duplex mode")
+        duplex_mode = str(input("\nYour selection [full/half]: "))
+        change_duplex_line = ConfigSwitch.change_duplex(duplex_mode)
+
+        change_traffic_speed_line = f" {change_duplex_line}\n speed {speed}"
         return change_traffic_speed_line
 
     def configure_interface(self) -> str:
+        interface_config_lines = []
         print("\nDo you want to configure :\n[1] FastEthernet interfaces\n[2] GigabitEthernet interfaces\n")
         interface_type = int(input("\nYour selection : "))
 
@@ -129,9 +153,11 @@ class ConfigSwitch():
                     for switchport_line in switchport_line_all:
                         if interface_type == '1':
                             interface_config_line = f"interface Fa0/{interface}\n" + switchport_line
+                            interface_config_lines.append(interface_config_line)
                         else:
                             interface_config_line = f"interface Gi0/{interface}\n" + switchport_line
 
+                        interface_config_lines.append(interface_config_line)
                         self.infos_switch.append(interface_config_line)
                 else:
                     print(Fore.RED + "\nVlans aren't created, please create them before assigment" + Fore.RESET)
@@ -147,13 +173,14 @@ class ConfigSwitch():
                 else:
                     interface_config_line = f"interface Gi0/{interface}\n" + change_traffic_speed_line
 
+                interface_config_lines.append(interface_config_line)
                 self.infos_switch.append(interface_config_line)
 
             else:
                 print(Fore.RED + "\nBad choice, please retry" + Fore.RESET)
                 ConfigSwitch.configure_interface()
 
-        return interface_config_line
+        return interface_config_lines
 
     def write_configuration(self, infos_switch: list):
         with open("config.txt", "w") as f:
