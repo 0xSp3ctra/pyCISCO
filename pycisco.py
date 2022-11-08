@@ -66,7 +66,6 @@ def app_start():
 
         elif choice == 5:
             interface_config_line = ConfigSwitch.configure_interface()
-            test(interface_config_line)
 
         elif choice == 6:
             print(Fore.YELLOW + "\n[+] Writing configuration in 'config.txt' ..." + Fore.RESET)
