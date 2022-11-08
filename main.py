@@ -97,37 +97,47 @@ class ConfigSwitch():
         print("\nDo you want to configure :\n[1] FastEthernet interfaces\n[2] GigabitEthernet interfaces\n")
         interface_type = str(input("\nYour selection : "))
 
-        if interface_type == '1':
-            print("\nEnter the numeros of the interfaces you want to configure " + Fore.YELLOW + "(1 2 3 X): " + Fore.RESET)
-            interface_choice = str(input("\nYour selection : "))
-            interfaces_to_configure = interface_choice.split()
+        print("\nEnter the numeros of the interfaces you want to configure " + Fore.YELLOW + "(1 2 3 X): " + Fore.RESET)
+        interface_choice = str(input("\nYour selection : "))
+        interfaces_to_configure = interface_choice.split()
 
-            for interface in interfaces_to_configure:
+        for interface in interfaces_to_configure:
+            if interface_type == '1':
                 print("\nWhat do you want to add on the interface " + Fore.YELLOW +  f"Fa0/{interface} ?" + Fore.RESET)
-                print("[1] Add vlan(s) on interface with switchport\n")
-                choice = int(input("\nYour selection : "))
+            elif interface_type == '2':
+                print("\nWhat do you want to add on the interface " + Fore.YELLOW +  f"Gi0/{interface} ?" + Fore.RESET)
+            else:
+                print("Interface type not recognized, please retry")
+                ConfigSwitch.configure_interface()
 
-                if choice == 1:
-                    print("Enter the numero of vlan to configure on this port " + Fore.YELLOW + f"{self.vlan_id_list} : " + Fore.RESET)
-                    vlans = str(input("\nYour selection : "))
-                    vlans = vlans.split(',')
-                    vlans_int = [int(vlans_int) for vlans_int in vlans]
+            print("[1] Add vlan(s) on interface with switchport\n")
+            choice = int(input("\nYour selection : "))
 
-                    check = any(item in vlans_int for item in self.vlan_id_list)
-                    if check:
-                        switchport_line_all = ConfigSwitch.switchport(vlans_int)
-                        for switchport_line in switchport_line_all:
+            if choice == 1:
+                print("Enter the numero of vlan to configure on this port " + Fore.YELLOW + f"{self.vlan_id_list} : " + Fore.RESET)
+                vlans = str(input("\nYour selection : "))
+                vlans = vlans.split(',')
+                vlans_int = [int(vlans_int) for vlans_int in vlans]
+
+                check = any(item in vlans_int for item in self.vlan_id_list)
+                if check:
+                    switchport_line_all = ConfigSwitch.switchport(vlans_int)
+                    for switchport_line in switchport_line_all:
+                        if interface_type == '1':
                             interface_config_line = f"interface Fa0/{interface}\n" + switchport_line
-                            self.infos_switch.append(interface_config_line)
-                    else:
-                        print(Fore.RED + "\nVlans aren't created, please create them before assigment" + Fore.RESET)
-                        break
+                        else:
+                            interface_config_line = f"interface Gi0/{interface}\n" + switchport_line
+
+                        self.infos_switch.append(interface_config_line)
+                else:
+                    print(Fore.RED + "\nVlans aren't created, please create them before assigment" + Fore.RESET)
+                    break
 
         return interface_config_line
 
     def write_configuration(self, infos_switch: list):
         with open("config.txt", "w") as f:
                 for element in self.infos_switch:
-                    print(Fore.GREEN + f"Adding line : {element} in config.txt ... " + Fore.RESET)
-                    sleep(.5)
+                    print(Fore.GREEN + f"[+] Adding line : {element} in config.txt ... " + Fore.RESET)
+                    sleep(.3)
                     f.write("\n" + element + "\n!")
