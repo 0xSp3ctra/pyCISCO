@@ -12,12 +12,15 @@ def banner():
 
 def show_menu():
     print("\nPlease chose actions to affect on your device :\n")
-    print(Fore.LIGHTBLUE_EX + "[1] " + Fore.RESET + "Give a hostname")
-    print(Fore.LIGHTBLUE_EX + "[2] " + Fore.RESET + "Create enable password")
-    print(Fore.LIGHTBLUE_EX + "[3] " + Fore.RESET + "Create user and password")
-    print(Fore.LIGHTBLUE_EX + "[4] " + Fore.RESET + "Create Vlans")
-    print(Fore.LIGHTBLUE_EX + "[5] " + Fore.RESET + "Configure interfaces")
-    print(Fore.LIGHTBLUE_EX + "[6] " + Fore.RESET + "Exit pyCISCO and write configuration file\n")
+    print(Fore.LIGHTBLUE_EX + "┌─[1] " + Fore.RESET + "Give a hostname")
+    print(Fore.LIGHTBLUE_EX + "├─[2] " + Fore.RESET + "Create enable password")
+    print(Fore.LIGHTBLUE_EX + "├─[3] " + Fore.RESET + "Create user and password")
+    print(Fore.LIGHTBLUE_EX + "├─[4] " + Fore.RESET + "Create Vlans")
+    print(Fore.LIGHTBLUE_EX + "├─[5] " + Fore.RESET + "Add default gateway")
+    print(Fore.LIGHTBLUE_EX + "├─[6] " + Fore.RESET + "Configure interfaces")
+    print(Fore.LIGHTBLUE_EX + "│  ├─[1] " + Fore.RESET + "Add switchports")
+    print(Fore.LIGHTBLUE_EX + "│  └─[2] " + Fore.RESET + "Change interface speed")
+    print(Fore.LIGHTBLUE_EX + "└─[7] " + Fore.RESET + "Exit pyCISCO and write configuration file\n")
 
 infos_switch = []
 vlan_id_list = []
@@ -34,7 +37,7 @@ def app_start():
     try:
         choice = int(input("\nYour selection: "))
     except ValueError:
-        print(Fore.RED + "\nInvalid option. Please enter 1-6 or press CTRL+C to exit: \n" + Fore.RESET)
+        print(Fore.RED + "\nInvalid option. Please enter 1-7 or press CTRL+C to exit: \n" + Fore.RESET)
         app_start()
     except KeyboardInterrupt:
         print(Fore.RED + "\nExiting pyCISCO ...\n" + Fore.RESET)
@@ -65,15 +68,21 @@ def app_start():
                 test(vlan_config_line)
 
         elif choice == 5:
-            interface_config_line = ConfigSwitch.configure_interface()
+            ip = str(input("Enter the ip adress : "))
+            if ip:
+                default_gateway_line = ConfigSwitch.add_default_gateway(ip)
+                test(default_gateway_line)
 
         elif choice == 6:
+            interface_config_line = ConfigSwitch.configure_interface()
+
+        elif choice == 7:
             print(Fore.YELLOW + "\n[+] Writing configuration in 'config.txt' ..." + Fore.RESET)
             ConfigSwitch.write_configuration(infos_switch)
             print(Fore.YELLOW + "\n[+] Configuration writed" + Fore.RESET)
             exit(0)
         else:
-            print(Fore.RED + "\nInvalid option. Please enter 1-6 or press CTRL + C to exit: \n" + Fore.RESET)
+            print(Fore.RED + "\nInvalid option. Please enter 1-7 or press CTRL + C to exit: \n" + Fore.RESET)
             app_start()
 
 def main():
