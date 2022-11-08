@@ -71,7 +71,7 @@ class ConfigSwitch():
         self.vlan_id_list.append(vlan_id)
         return vlan_config_line
 
-    def switchport(vlans_int: list[str]) -> str:
+    def add_switchport(vlans_int: list[str]) -> str:
         switchport_line_all = []
 
         for vlan in vlans_int:
@@ -93,24 +93,28 @@ class ConfigSwitch():
 
         return switchport_line_all
 
+    def change_traffic_speed(speed: int) -> str:
+        change_traffic_speed_line = f" speed {speed}"
+        return change_traffic_speed_line
+
     def configure_interface(self) -> str:
         print("\nDo you want to configure :\n[1] FastEthernet interfaces\n[2] GigabitEthernet interfaces\n")
-        interface_type = str(input("\nYour selection : "))
+        interface_type = int(input("\nYour selection : "))
 
         print("\nEnter the numeros of the interfaces you want to configure " + Fore.YELLOW + "(1 2 3 X): " + Fore.RESET)
         interface_choice = str(input("\nYour selection : "))
         interfaces_to_configure = interface_choice.split()
 
         for interface in interfaces_to_configure:
-            if interface_type == '1':
+            if interface_type == 1:
                 print("\nWhat do you want to add on the interface " + Fore.YELLOW +  f"Fa0/{interface} ?" + Fore.RESET)
-            elif interface_type == '2':
+            elif interface_type == 2:
                 print("\nWhat do you want to add on the interface " + Fore.YELLOW +  f"Gi0/{interface} ?" + Fore.RESET)
             else:
                 print("Interface type not recognized, please retry")
                 ConfigSwitch.configure_interface()
 
-            print("[1] Add vlan(s) on interface with switchport\n")
+            print("[1] Add vlan(s) on interface with switchport\n[2] Configure interface speed (Mb/s)\n")
             choice = int(input("\nYour selection : "))
 
             if choice == 1:
@@ -121,7 +125,7 @@ class ConfigSwitch():
 
                 check = any(item in vlans_int for item in self.vlan_id_list)
                 if check:
-                    switchport_line_all = ConfigSwitch.switchport(vlans_int)
+                    switchport_line_all = ConfigSwitch.add_switchport(vlans_int)
                     for switchport_line in switchport_line_all:
                         if interface_type == '1':
                             interface_config_line = f"interface Fa0/{interface}\n" + switchport_line
@@ -133,11 +137,27 @@ class ConfigSwitch():
                     print(Fore.RED + "\nVlans aren't created, please create them before assigment" + Fore.RESET)
                     break
 
+            elif choice == 2:
+                print("\nChoose the new interface speed (10, 100 ...)")
+                new_interface_speed = int(input("\nYour selection : "))
+                change_traffic_speed_line = ConfigSwitch.change_traffic_speed(new_interface_speed)
+
+                if interface_type == '1':
+                    interface_config_line = f"interface Fa0/{interface}\n" + change_traffic_speed_line
+                else:
+                    interface_config_line = f"interface Gi0/{interface}\n" + change_traffic_speed_line
+
+                self.infos_switch.append(interface_config_line)
+
+            else:
+                print(Fore.RED + "\nBad choice, please retry" + Fore.RESET)
+                ConfigSwitch.configure_interface()
+
         return interface_config_line
 
     def write_configuration(self, infos_switch: list):
         with open("config.txt", "w") as f:
                 for element in self.infos_switch:
-                    print(Fore.GREEN + f"[+] Adding line : {element} in config.txt ... " + Fore.RESET)
+                    print(Fore.GREEN + f"[+] Adding line :\n{element} in config.txt ... " + Fore.RESET)
                     sleep(.3)
                     f.write("\n" + element + "\n!")
