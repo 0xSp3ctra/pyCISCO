@@ -6,7 +6,7 @@ def banner():
     print('''
     ▛▀▀▀▀▀▀▀▜   PyCISCO
     ▌ ▋▋▋▋▋▋▐   by @0xSp3ctra & <br>
-    ▌       ▐   v1.1
+    ▌       ▐   v1.0
     █▙▁▁▁▁▁▟█
     ''')
 
