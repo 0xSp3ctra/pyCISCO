@@ -161,10 +161,10 @@ class ConfigSwitch():
                     for switchport_line in switchport_line_all:
                         if interface_type == '1':
                             interface_config_line = f"interface Fa0/{interface}\n" + switchport_line
-                            interface_config_lines.append(interface_config_line)
                         else:
                             interface_config_line = f"interface Gi0/{interface}\n" + switchport_line
 
+                        interface_config_line = interface_config_line + "\n no shutdown"
                         interface_config_lines.append(interface_config_line)
                         self.infos_switch.append(interface_config_line)
                 else:
@@ -181,6 +181,7 @@ class ConfigSwitch():
                 else:
                     interface_config_line = f"interface Gi0/{interface}\n" + change_traffic_speed_line
 
+                interface_config_line = interface_config_line + "\n no shutdown"
                 interface_config_lines.append(interface_config_line)
                 self.infos_switch.append(interface_config_line)
 
