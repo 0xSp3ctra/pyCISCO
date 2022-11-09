@@ -94,11 +94,19 @@ class ConfigSwitch():
                 switchport_line_all.append(switchport_line)
 
             elif switchport_mode == "trunk":
-                switchport_line = f" switchport mode trunk\n switchport trunk allowed vlan {vlan}"
+                print("\nDo you want to add the dot1q encapsulation for your trunk link ?")
+                encapsulation = str(input("\nYour selection [y/n] : "))
+                if encapsulation == 'y':
+                    switchport_line = f" switchport mode trunk\n switchport trunk encapsulation dot1q\n switchport trunk allowed vlan {vlan}"
+                elif encapsulation == 'n':
+                    switchport_line = f" switchport mode trunk\n switchport trunk allowed vlan {vlan}"
+                else:
+                    print(Fore.RED + "Bad input." + Fore.RED)
+                    pass
+
                 switchport_line_all.append(switchport_line)
 
             else:pass
-
         return switchport_line_all
 
     def change_duplex(mode: str) -> str:
