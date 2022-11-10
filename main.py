@@ -55,6 +55,21 @@ class ConfigSwitch():
             default_gateway_line = f"ip default-gateway {ip}"
         self.infos_switch.append(default_gateway_line)
         return default_gateway_line
+
+    def add_ip_route(self, ip_infos) -> str:
+        src = ip_infos.split(" ")[1]
+        dst = ip_infos.split(" ")[0]
+        ip_src = src.split(':')[0]
+        mask_src = src.split(':')[1]
+        ip_dst = dst.split(':')[0]
+        mask_dst = dst.split(':')[1]
+
+        if ConfigSwitch.test_ip_mask(ip_src) and ConfigSwitch.test_ip_mask(ip_dst)\
+            and ConfigSwitch.test_ip_mask(mask_src) and ConfigSwitch.test_ip_mask(mask_dst):
+            
+            ip_route_line = f"ip route {ip_dst} {mask_dst} {ip_src} {mask_src}"
+        self.infos_switch.append(ip_route_line)
+        return ip_route_line
         
     def create_vlan(self, vlan_infos: str) -> str:
         '''
