@@ -49,10 +49,7 @@ $ sudo apt-get install build-essential libssl-dev python-dev
 
 Download required modules with pip
 ```shell
-$ pip install scrypt
-$ pip install colorama
-$ pip install passlib
-$ pip install backports.pbkdf2
+$ pip3 install scrypt, colorama, passlib, backports.pbkdf2
 ```
 
 Or with conda
