@@ -79,16 +79,24 @@ class ConfigSwitch():
         vlan_config_line = ""
         if vlan_infos.count(':') > 1:
             vlan_id = int(vlan_infos.split(':')[0])
-            vlan_name = vlan_infos.split(':')[1]
-            vlan_ip = vlan_infos.split(':')[2]
-            vlan_mask = vlan_infos.split(':')[3]
+            if vlan_id in self.vlan_id_list:
+                print(Fore.RED + "\nVlan already created, please chose another vlan id." + Fore.RESET)
+                exit()
+            else:
+                vlan_name = vlan_infos.split(':')[1]
+                vlan_ip = vlan_infos.split(':')[2]
+                vlan_mask = vlan_infos.split(':')[3]
 
             if ConfigSwitch.test_ip_mask(ip=vlan_ip) and ConfigSwitch.test_ip_mask(ip=vlan_mask):
                 vlan_config_line = f"interface Vlan{vlan_id}\n name {vlan_name}\n ip address {vlan_ip} {vlan_mask}"        
         else:
             vlan_id = int(vlan_infos.split(':')[0])
-            vlan_name = vlan_infos.split(':')[1]
-            vlan_config_line = f"interface Vlan{vlan_id}\n name {vlan_name}"
+            if vlan_id in self.vlan_id_list:
+                print(Fore.RED + "\nVlan already created, please chose another vlan id." + Fore.RESET)
+                exit()
+            else:
+                vlan_name = vlan_infos.split(':')[1]
+                vlan_config_line = f"interface Vlan{vlan_id}\n name {vlan_name}"
 
         self.infos_switch.append(vlan_config_line)
         self.vlan_id_list.append(vlan_id)
@@ -121,7 +129,10 @@ class ConfigSwitch():
 
                 switchport_line_all.append(switchport_line)
 
-            else:pass
+            else:
+                print(Fore.RED + "Bad input." + Fore.RED)
+                exit()
+
         return switchport_line_all
 
     def change_duplex(mode: str) -> str:
